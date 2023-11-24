@@ -26,7 +26,8 @@ object SparkAPIs {
   val df = rdd.toDF("id")
   df.count() // ~16s - might vary
   val dfCount = df.selectExpr("count(*)") // same
-  // look at the Spark UI - there's a wholestagecodegen step in the stage - that's Spark generating the appropriate bytecode to process RDDs behind the scenes
+  // look at the Spark UI - there's a wholestagecodegen step in the stage -
+  // that's Spark generating the appropriate bytecode to process RDDs behind the scenes
   // most of the time taken is just the RDD transformation - look at the time taken in stage 1
 
   val ds = spark.range(1, 1000000000)
@@ -42,7 +43,8 @@ object SparkAPIs {
     * Notice that inside the same "realm", i.e. RDDs or DFs, the computation time is small.
     * Converting between them takes a long time.
     * That's because each row is processed individually.
-    * Conversions are particularly bad in Python, because the data needs to go from the Python interpreter to the JVM AND back.
+    * Conversions are particularly bad in Python,
+    * because the data needs to go from the Python interpreter to the JVM AND back.
     *
     * Lesson 1: once decided on the API level, STAY THERE.
     */
@@ -51,7 +53,7 @@ object SparkAPIs {
   rddTimes5.count() // ~20s
   // one stage
 
-  val dfTimes5 = df.select("id * 5 as id")
+  val dfTimes5 = df.selectExpr("id * 5 as id")
   val dfTimes5Count = dfTimes5.selectExpr("count(*)")
   dfTimes5Count.show() // still 11-12s
   /*
@@ -83,7 +85,8 @@ object SparkAPIs {
    */
 
   /**
-    * Exercise: measure the time it takes to count the number of elements from the DS, multiplied by 5.
+    * Exercise:
+    * measure the time it takes to count the number of elements from the DS, multiplied by 5.
     * Try to explain the difference. It's ok if you have like an 80% explanation.
     */
   val dsTimes5 = ds.map(_ * 5)

@@ -4,7 +4,7 @@ name := "spark-optimization-2"
 version := "0.2"
 
 scalaVersion := "2.13.12"
-val sparkVersion = "3.5.0"
+  val sparkVersion = "3.5.0"
 val postgresVersion = "42.6.0"
 val log4jVersion = "2.20.0"
 

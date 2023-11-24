@@ -1,5 +1,6 @@
 package part2foundations
 
+import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.SparkSession
 
 
@@ -50,7 +51,7 @@ object SparkJobAnatomy {
   // each stage is delimited by shuffles
 
   // job 4, a more complex computation: load a file and compute the average salary of the employees by department
-  val employees = sc.textFile("/tmp/employees.csv")
+  val employees= sc.textFile("/tmp/data/employees/employees.csv")
   // process the lines
   val empTokens = employees.map(line => line.split(","))
   // extract relevant data
@@ -61,7 +62,7 @@ object SparkJobAnatomy {
   val avgSalaries = empGroups.mapValues(salaries => salaries.map(_.toInt).sum / salaries.size)
   // show the result
   avgSalaries
-    .collect() // this is an action
+    .collect() // this is an actio
     .foreach(println)
 
   // look at the Spark UI: one job, 2 stages

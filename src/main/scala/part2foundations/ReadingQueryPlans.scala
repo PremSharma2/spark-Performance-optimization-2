@@ -21,6 +21,7 @@ object ReadingQueryPlans {
   val times5 = simpleNumbers.selectExpr("id * 5 as id")
   times5.explain() // this is how you show a query plan
   /*
+  TODO
     == Physical Plan ==
     *(1) Project [(id#0L * 5) AS id#2L]
     +- *(1) Range (1, 1000000, step=1, splits=6)
@@ -31,7 +32,9 @@ object ReadingQueryPlans {
   val split7 = moreNumbers.repartition(7)
 
   split7.explain()
+
   /*
+ TODO
     == Physical Plan ==
     Exchange RoundRobinPartitioning(7), false, [id=#16]
     +- *(1) Range (1, 1000000, step=2, splits=6)
@@ -39,7 +42,23 @@ object ReadingQueryPlans {
 
   // plan 3 - shuffle + transformation
   split7.selectExpr("id * 5 as id").explain()
+
   /*
+  TODO
+     If we visualize the physical plan as a tree,
+      the leaf node (Range) is at the bottom,
+      and the Project node is at the top.
+      The Exchange node acts as an intermediate node
+      between the leaf and the Project node.
+      The structure can be represented as follows:
+
+  TODO
+     Project (Root node)
+    |
+    Exchange (The Exchange node acts as an intermediate node)
+    |
+   Range (Leaf node)
+ TODO
     == Physical Plan ==
     *(2) Project [(id#4L * 5) AS id#8L]
     +- Exchange RoundRobinPartitioning(7), false, [id=#29]
@@ -58,6 +77,32 @@ object ReadingQueryPlans {
   sum.explain()
   /*
 
+TODO
+ HashAggregate (keys=[], functions=[sum(id#18L)])
+ |
+ Exchange (SinglePartition)
+ |
+ HashAggregate (keys=[], functions=[partial_sum(id#18L)])
+ |
+ Project
+ |
+ SortMergeJoin (Inner, id#18L)
+ /               \
+ Sort (id#18L)    Sort (id#12L)
+ |               |
+ Exchange        Exchange (hashpartitioning)
+ |               |
+ Project         Project (id#10L * 3)
+ |               |
+ Exchange        Exchange (RoundRobinPartitioning)
+ |               |
+ Range           Range
+ |               |
+ Exchange        Exchange (RoundRobinPartitioning)
+ |               |
+ Range           Range
+
+ TODO
   == Physical Plan ==
   *(7) HashAggregate(keys=[], functions=[sum(id#18L)])
   +- Exchange SinglePartition, true, [id=#99]
