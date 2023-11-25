@@ -48,7 +48,8 @@ object Bucketing {
     .bucketBy(4, "id")
     .sortBy("id")
     .mode("overwrite")
-    .saveAsTable("bucketed_small") // bucketing and saving almost as expensive as a regular shuffle
+    .saveAsTable("bucketed_small")
+  // bucketing and saving almost as expensive as a regular shuffle
 
   spark.sql("use default")
   val bucketedLarge = spark.table("bucketed_large")
